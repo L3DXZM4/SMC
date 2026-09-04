@@ -42,10 +42,10 @@
 
     <!-- HERO SECTION -->
     <header class="hero" id="descarga">
-        <!--<div class="server-badge">
-            <span class="pulse-dot"></span>
-            Servidor Online & Listo para Jugar
-        </div>-->
+        <div class="server-badge" id="server-status-badge">
+            <span class="pulse-dot" id="server-status-dot"></span>
+            <span id="server-status-text">Comprobando estado...</span>
+        </div>
 
         <h1 class="hero-main-title">
             <span>Servidor de Minecraft con Mods</span>
@@ -190,6 +190,43 @@
         </div>
     </footer>
 
+    <!-- SCRIPT ESTADO DEL SERVIDOR -->
+    <script>
+        const SERVER_IP = "wills-kent.tun.ply.gg";
+
+        async function checkServerStatus() {
+            const badge = document.getElementById("server-status-badge");
+            const text = document.getElementById("server-status-text");
+
+            if (!badge || !text) return;
+
+            try {
+                // Minetools resuelve registros SRV de Java / NeoForge / Playit.gg en tiempo real
+                const response = await fetch(`https://api.minetools.eu/ping/${encodeURIComponent(SERVER_IP)}`);
+                const data = await response.json();
+
+                if (!data.error && data.players) {
+                    badge.classList.remove("offline");
+                    badge.classList.add("online");
+                    const onlineCount = data.players.online ?? 0;
+                    text.textContent = `Servidor Abierto (${onlineCount} ${onlineCount === 1 ? 'jugador conectado' : 'jugadores conectados'})`;
+                } else {
+                    badge.classList.remove("online");
+                    badge.classList.add("offline");
+                    text.textContent = "Servidor Apagado";
+                }
+            } catch (error) {
+                console.error("Error al consultar el estado del servidor:", error);
+                badge.classList.remove("online");
+                badge.classList.add("offline");
+                text.textContent = "Servidor Apagado";
+            }
+        }
+
+        // Consultar al cargar y cada 20 segundos
+        checkServerStatus();
+        setInterval(checkServerStatus, 20000);
+    </script>
 </body>
 
 </html>

@@ -238,6 +238,34 @@ body {
     text-transform: uppercase;
     margin-bottom: 25px;
     box-shadow: 0 0 20px rgba(71, 114, 30, 0.3);
+    transition: all 0.3s ease;
+}
+
+/* Estado Online */
+.server-badge.online {
+    background: rgba(71, 114, 30, 0.25);
+    border-color: rgba(104, 211, 39, 0.5);
+    color: #a7f380;
+    box-shadow: 0 0 20px rgba(71, 114, 30, 0.35);
+}
+
+.server-badge.online .pulse-dot {
+    background-color: var(--verde-brillante);
+    box-shadow: 0 0 8px var(--verde-brillante);
+}
+
+/* Estado Offline */
+.server-badge.offline {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #fca5a5;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+}
+
+.server-badge.offline .pulse-dot {
+    background-color: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+    animation: pulse-red 2s infinite;
 }
 
 .server-badge .pulse-dot {
@@ -263,6 +291,23 @@ body {
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(104, 211, 39, 0);
+    }
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
     }
 }
 
