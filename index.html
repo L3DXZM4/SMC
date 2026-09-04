@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMM | Servidor de Minecraft con Mods</title>
+    <meta name="description"
+        content="Descarga el instalador oficial del Servidor de Minecraft con Mods (SMM). Una experiencia única, optimizada y llena de aventuras.">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="#" class="nav-logo" onclick="event.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'});">
+            <img src="https://raw.githubusercontent.com/L3DXZM4/SMM/refs/heads/main/RecursosWeb/logo.png"
+                alt="SMM Icono" class="nav-icon">
+            <div class="nav-logo-text">
+                <span class="brand-title">Servidor de Minecraft con Mods</span>
+                <!--<span class="brand-badge">Servidor de Minecraft con Mods</span>-->
+            </div>
+        </a>
+
+        <!--<ul class="nav-links">
+            <li><a href="#descarga">Descargar</a></li>
+            <li><a href="#instalacion">Instalación</a></li>
+            <li><a href="#caracteristicas">Características</a></li>
+            <li><a href="#modos">Modos</a></li>
+            <li><a href="#donaciones">Donaciones</a></li>
+            <li><a href="#discord">Discord</a></li>
+        </ul>-->
+
+        <!--<div class="nav-auth">
+            <a href="https://github.com/L3DXZM4/SMM/releases/download/ArchivosdelLauncher/SMM_Instalador.exe"
+                class="nav-btn-download">
+                Descargar .EXE
+            </a>
+        </div>-->
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero" id="descarga">
+        <!--<div class="server-badge">
+            <span class="pulse-dot"></span>
+            Servidor Online & Listo para Jugar
+        </div>-->
+
+        <h1 class="hero-main-title">
+            <span>Servidor de Minecraft con Mods</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Vive una experiencia de supervivencia única con mods, plugins, imaginacion y mas.
+        </p>
+
+        <!-- BOTÓN DE DESCARGA ACTIVO -->
+        <div class="download-container">
+            <a href="https://github.com/L3DXZM4/SMM/releases/download/ArchivosdelLauncher/SMM_Instalador.exe"
+                class="download-btn" id="btn-descarga">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <div class="btn-content">
+                    <span class="btn-label">Descargar Instalador</span>
+                    <span>SMM_Instalador.exe (Directo)</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="quick-specs">
+            <span>💻 Windows 10/11</span>
+            <span>•</span>
+            <span>⚡ Instalación en 1-clic</span>
+            <span>•</span>
+            <span>🎮 Java Incluido</span>
+        </div>
+
+        <!-- AVISO DE SEGURIDAD -->
+        <div class="download-disclaimer">
+            <strong>Aviso de seguridad (Windows SmartScreen):</strong> Al ejecutar el instalador por primera vez, es
+            posible que Windows o tu navegador muestren un mensaje de advertencia. Esto ocurre únicamente porque somos
+            un proyecto independiente y no contamos con una costosa firma digital corporativa. Haz clic en <em>"Más
+                información"</em> &gt; <em>"Ejecutar de todas formas"</em>. ¡El instalador es 100% limpio y seguro!
+        </div>
+    </header>
+
+    <!-- SECCIÓN PASOS DE INSTALACIÓN -->
+    <section id="instalacion" class="seccion-pagina seccion-solida">
+        <div class="contenido-ancho">
+            <h2 class="titulo-seccion">¿Cómo Empezar a Jugar?</h2>
+
+            <div class="grid-pasos">
+                <div class="tarjeta-paso">
+                    <div class="numero-paso">1</div>
+                    <h3>Descarga el Instalador</h3>
+                    <p>Haz clic en el botón de descarga principal para obtener el archivo
+                        <code>SMM_Instalador.exe</code> directamente.
+                    </p>
+                </div>
+
+                <div class="tarjeta-paso">
+                    <div class="numero-paso">2</div>
+                    <h3>Ejecuta y Configura</h3>
+                    <p>Abre el instalador. Este descargará y preparará automáticamente los mods, configuraciones y
+                        assets necesarios.</p>
+                </div>
+
+                <div class="tarjeta-paso">
+                    <div class="numero-paso">3</div>
+                    <h3>¡Entra a Jugar!</h3>
+                    <p>Inicia el juego desde el lanzador y conéctate automáticamente a nuestro servidor para comenzar tu
+                        aventura.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN CARACTERÍSTICAS -->
+    <section id="caracteristicas" class="seccion-pagina">
+        <div class="contenido-ancho">
+            <h2 class="titulo-seccion">Características del Servidor</h2>
+
+            <div class="grid-caracteristicas">
+                <div class="tarjeta-caracteristica tarjeta-destacada-hosting">
+                    <span class="icono-caract">🖥️</span>
+                    <h3>Hosting Casero e Independiente</h3>
+                    <p>SMM está montado directamente desde un PC dedicado local. No dependemos de costosas empresas
+                        externas y el proyecto se sostiene gracias al apoyo de la comunidad.</p>
+                </div>
+
+                <!--
+                <div class="tarjeta-caracteristica">
+                    <span class="icono-caract">🚀</span>
+                    <h3>Rendimiento Optimizado</h3>
+                    <p>Modpack depurado para evitar caídas de FPS y lag en el servidor. Optimizaciones tanto del lado
+                        del cliente como del servidor.</p>
+                </div>
+                -->
+
+                <div class="tarjeta-caracteristica">
+                    <span class="icono-caract">⚔️</span>
+                    <h3>Aventura & Progresión</h3>
+                    <p>Integración de mods balanceada: nuevas criaturas, dimensiones, sistemas de magia, tecnología y
+                        exploración que premian el trabajo en equipo.</p>
+                </div>
+
+                <div class="tarjeta-caracteristica">
+                    <span class="icono-caract">👥</span>
+                    <h3>Comunidad Activa</h3>
+                    <p>Juega con amigos, crea clanes, comercia y participa en eventos organizados regularmente por la
+                        administración.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DONACIONES -->
+    <!--<section id="donaciones" class="seccion-pagina seccion-solida">
+        <div class="contenido-ancho">
+            <h2 class="titulo-seccion">Donaciones Nequi</h2>
+
+            <div class="contenedor-donaciones-qr">
+                <div class="tarjeta-nequi-qr">
+                    <h3>Apoya el Mantenimiento del Servidor</h3>
+                    <p>Cada aporte ayuda directamente a costear la luz, la conexión de fibra óptica y mejoras en los
+                        componentes del equipo donde se aloja el servidor de forma independiente. ¡Escanea el código QR
+                        desde tu app Nequi!</p>
+
+                    <div class="aspecto-16-9-box">
+                        <img src="https://raw.githubusercontent.com/L3DXZM4/CaliCraftNetworkFiles/refs/heads/main/RecursosWeb/Nequi.png"
+                            alt="Código QR Nequi SMM" class="qr-imagen-render">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>-->
+
+    <!-- FOOTER -->
+    <footer class="footer-smm">
+        <div class="contenido-ancho">
+            <p><strong>SMM</strong> — Servidor de Minecraft con Mods.</p>
+            <div class="footer-links">
+                <!--<a href="#descarga">Descargar Launcher</a>-->
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
