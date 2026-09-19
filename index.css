@@ -1,5 +1,5 @@
 /* ==========================================================================
-   SMM - SERVIDOR DE MINECRAFT CON MODS | HOJA DE ESTILOS PRINCIPAL
+   SMC - SERVIDOR DE MINECRAFT CALEÑO | HOJA DE ESTILOS PRINCIPAL
    Diseño moderno, gamer y optimizado para descargas e información del servidor
    ========================================================================== */
 
@@ -55,7 +55,7 @@ body {
         radial-gradient(circle at 50% 20%, rgba(71, 114, 30, 0.12) 0%, transparent 60%),
         radial-gradient(circle at 80% 80%, rgba(88, 101, 242, 0.08) 0%, transparent 50%),
         linear-gradient(rgba(13, 15, 18, 0.75), rgba(13, 15, 18, 0.88)),
-        url('https://raw.githubusercontent.com/L3DXZM4/SMM/refs/heads/main/RecursosWeb/fondo.png');
+        url('https://raw.githubusercontent.com/L3DXZM4/SMC/refs/heads/main/RecursosWeb/fondo.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -334,6 +334,89 @@ body {
     line-height: 1.6;
     margin-bottom: 40px;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.9);
+}
+
+/* Contenedor de Botones de Acción (Jugar / Descargar) */
+.action-buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+/* Botón JUGAR AHORA (Protocolo smclauncher://) */
+.btn-smc {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 360px;
+    max-width: 90vw;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    border: 2px solid #34d399;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    animation: play-pulse 2.5s infinite;
+}
+
+@keyframes play-pulse {
+    0%, 100% {
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        box-shadow: 0 12px 36px rgba(52, 211, 153, 0.65), 0 0 15px rgba(52, 211, 153, 0.35);
+        transform: translateY(-2px);
+    }
+}
+
+.btn-smc:hover {
+    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    border-color: #6ee7b7;
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 16px 40px rgba(16, 185, 129, 0.6);
+}
+
+.btn-smc .btn-play-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    fill: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.btn-smc .btn-content {
+    text-align: left;
+}
+
+.btn-smc .btn-label {
+    display: block;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.btn-smc .btn-subtext {
+    display: block;
+    font-size: 12px;
+    color: #ecfdf5;
+    font-weight: 600;
+    text-transform: none;
+    margin-top: 2px;
 }
 
 /* Botón de Descarga Activo */
@@ -837,7 +920,8 @@ body {
 /* --------------------------------------------------------------------------
    11. FOOTER
    -------------------------------------------------------------------------- */
-.footer-smm {
+.footer-smm,
+.footer-smc {
     padding: 40px 20px;
     background-color: #0b0c0e;
     border-top: 1px solid var(--border-color);
@@ -846,7 +930,8 @@ body {
     font-size: 14px;
 }
 
-.footer-smm p {
+.footer-smm p,
+.footer-smc p {
     margin-bottom: 8px;
 }
 
