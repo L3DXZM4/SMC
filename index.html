@@ -25,9 +25,22 @@
 
     <!-- HERO SECTION -->
     <header class="hero" id="descarga">
-        <div class="server-badge" id="server-status-badge">
-            <span class="pulse-dot" id="server-status-dot"></span>
-            <span id="server-status-text">Comprobando estado...</span>
+        <div class="hero-status-row">
+            <div class="server-badge" id="server-status-badge">
+                <span class="pulse-dot" id="server-status-dot"></span>
+                <span id="server-status-text">Comprobando estado...</span>
+            </div>
+            <!-- Botón de notificaciones (debajo del badge) -->
+            <button class="notif-btn" id="btn-notif" onclick="toggleNotificaciones(event)" title="Notificaciones del servidor">
+                <span class="notif-icon" id="notif-icon">🔔</span>
+                <span class="notif-label" id="notif-label">Notificarme cuando abra</span>
+            </button>
+            <!-- Tooltip de ayuda para notificaciones bloqueadas -->
+            <div class="notif-tooltip" id="notif-tooltip" style="display:none;">
+                <div class="notif-tooltip-title">⚠️ Notificaciones bloqueadas en tu navegador</div>
+                <div class="notif-tooltip-body">Para activarlas, haz clic en el icono 🔒 a la izquierda de la URL, cambia <strong>Notificaciones</strong> a <strong>Permitir</strong> y recarga la página.</div>
+                <button class="notif-tooltip-reload" onclick="window.location.reload()">🔄 Recargar página</button>
+            </div>
         </div>
 
         <h1 class="hero-main-title">
@@ -42,7 +55,7 @@
         <!-- BOTONES DE ACCIÓN (JUGAR / DESCARGAR) -->
         <div class="action-buttons-group">
             <!-- Botón Jugar (visible solo cuando el servidor está ONLINE) -->
-            <button class="btn-smc" id="btn-jugar" style="display: none;" onclick="abrirLauncher()">
+            <a class="btn-smc" id="btn-jugar" style="display: none;" href="javascript:void(0)" onclick="abrirLauncher(event)">
                 <svg viewBox="0 0 24 24" fill="currentColor" class="btn-play-icon">
                     <path d="M8 5v14l11-7z" />
                 </svg>
@@ -50,7 +63,7 @@
                     <span class="btn-label">Jugar ahora</span>
                     <span class="btn-subtext">Abrir SMC Launcher</span>
                 </div>
-            </button>
+            </a>
 
             <!-- Botón de Descarga del Instalador (visible solo cuando OFFLINE) -->
             <div class="download-container" id="container-descarga">
@@ -70,28 +83,6 @@
             </div>
         </div>
 
-        <!-- MODAL: ABRIENDO LAUNCHER -->
-        <div id="modal-launcher" class="modal-launcher-overlay" style="display: none;" onclick="cerrarModal(event)">
-            <div class="modal-launcher-box">
-                <!-- Estado: Abriendo... -->
-                <div id="modal-estado-abriendo">
-                    <div class="modal-spinner"></div>
-                    <h3 class="modal-titulo">Abriendo SMCLauncher</h3>
-                    <p class="modal-texto">Iniciando el launcher de SMC en tu PC...</p>
-                </div>
-                <!-- Estado: No encontrado -->
-                <div id="modal-estado-noencontrado" style="display: none;">
-                    <div class="modal-icono-error">⚠️</div>
-                    <h3 class="modal-titulo">¿Aún no tienes SMCLauncher?</h3>
-                    <p class="modal-texto">No detectamos el launcher instalado en tu PC. Descárgalo e instálalo para poder jugar.</p>
-                    <a href="https://github.com/L3DXZM4/SMC/releases/download/ArchivosdelLauncher/SMC_Instalador.exe"
-                        class="modal-btn-instalar" id="modal-btn-instalar">
-                        ⬇️ Instalar SMCLauncher
-                    </a>
-                </div>
-                <button class="modal-btn-cerrar" onclick="cerrarModal()">✕</button>
-            </div>
-        </div>
 
         <div class="quick-specs">
             <span>💻 Windows 10/11</span>
@@ -184,15 +175,159 @@
         </div>
     </footer>
 
+    <!-- MODAL: ABRIENDO LAUNCHER (fuera del header para que position:fixed funcione) -->
+    <div id="modal-launcher" class="modal-launcher-overlay" style="display: none;" onclick="cerrarModal(event)">
+        <div class="modal-launcher-box">
+            <!-- Estado: Abriendo... -->
+            <div id="modal-estado-abriendo">
+                <div class="modal-spinner"></div>
+                <h3 class="modal-titulo">Abriendo SMCLauncher</h3>
+                <p class="modal-texto">Iniciando el launcher de SMC en tu PC...</p>
+            </div>
+            <!-- Estado: No encontrado -->
+            <div id="modal-estado-noencontrado" style="display: none;">
+                <div class="modal-icono-error">⚠️</div>
+                <h3 class="modal-titulo">¿Aún no tienes SMCLauncher?</h3>
+                <p class="modal-texto">No detectamos el launcher instalado en tu PC. Descárgalo e instálalo para poder jugar.</p>
+                <a href="https://github.com/L3DXZM4/SMC/releases/download/ArchivosdelLauncher/SMC_Instalador.exe"
+                    class="modal-btn-instalar">
+                    ⬇️ Instalar SMCLauncher
+                </a>
+            </div>
+            <button class="modal-btn-cerrar" onclick="cerrarModal()">✕</button>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
     <script>
         const SERVER_IP = "wills-kent.tun.ply.gg";
         let servidorOnline = false;
+        let prevServidorOnline = null; // null = primera carga, no disparar notif
+
+        // ─── Notificaciones del navegador ──────────────────────────────
+        function actualizarEstadoBotonNotif() {
+            const btn = document.getElementById('btn-notif');
+            const icon = document.getElementById('notif-icon');
+            const label = document.getElementById('notif-label');
+            const tooltip = document.getElementById('notif-tooltip');
+            if (!btn) return;
+
+            if (!('Notification' in window)) {
+                btn.style.display = 'none';
+                return;
+            }
+
+            btn.disabled = false;
+            btn.classList.remove('notif-activo', 'notif-silenciado', 'notif-bloqueado');
+
+            if (Notification.permission === 'granted') {
+                const silenciado = localStorage.getItem('smc_notif_silenciado') === 'true';
+                if (silenciado) {
+                    btn.classList.add('notif-silenciado');
+                    icon.textContent = '🔕';
+                    label.textContent = 'Notificaciones silenciadas (clic para activar)';
+                    btn.title = 'Haz clic para volver a activar las notificaciones';
+                } else {
+                    btn.classList.add('notif-activo');
+                    icon.textContent = '🔔';
+                    label.textContent = 'Notificaciones activas (clic para silenciar)';
+                    btn.title = 'Haz clic para silenciar las alertas del servidor';
+                }
+                if (tooltip) tooltip.style.display = 'none';
+            } else if (Notification.permission === 'denied') {
+                btn.classList.add('notif-bloqueado');
+                icon.textContent = '🔕';
+                label.textContent = 'Notificaciones bloqueadas (clic para ver cómo activarlas)';
+                btn.title = 'Tu navegador tiene bloqueadas las notificaciones para este sitio';
+            } else {
+                icon.textContent = '🔔';
+                label.textContent = 'Notificarme cuando abra el server';
+                btn.title = 'Recibe una alerta en tu pantalla cuando el servidor abra';
+                if (tooltip) tooltip.style.display = 'none';
+            }
+        }
+
+        async function toggleNotificaciones(event) {
+            if (event) event.preventDefault();
+            if (!('Notification' in window)) return;
+            const tooltip = document.getElementById('notif-tooltip');
+
+            // Caso 1: El navegador tiene bloqueadas las notificaciones
+            if (Notification.permission === 'denied') {
+                if (tooltip) {
+                    tooltip.style.display = (tooltip.style.display === 'none' || !tooltip.style.display) ? 'block' : 'none';
+                }
+                return;
+            }
+
+            // Ocultar tooltip si estaba abierto
+            if (tooltip) tooltip.style.display = 'none';
+
+            // Caso 2: Permisos ya concedidos -> Alternar entre Activas y Silenciadas
+            if (Notification.permission === 'granted') {
+                const silenciado = localStorage.getItem('smc_notif_silenciado') === 'true';
+                if (silenciado) {
+                    localStorage.removeItem('smc_notif_silenciado');
+                    actualizarEstadoBotonNotif();
+                    try {
+                        new Notification('🔔 SMC — Notificaciones activadas', {
+                            body: 'Te avisaremos en cuanto el servidor abra.',
+                            icon: 'https://raw.githubusercontent.com/L3DXZM4/SMC/refs/heads/main/RecursosWeb/logo.png'
+                        });
+                    } catch (e) {}
+                } else {
+                    localStorage.setItem('smc_notif_silenciado', 'true');
+                    actualizarEstadoBotonNotif();
+                }
+                return;
+            }
+
+            // Caso 3: Permiso por primera vez (default)
+            try {
+                const permiso = await Notification.requestPermission();
+                if (permiso === 'granted') {
+                    localStorage.removeItem('smc_notif_silenciado');
+                    actualizarEstadoBotonNotif();
+                    try {
+                        new Notification('🔔 SMC — ¡Notificaciones activadas!', {
+                            body: 'Te avisaremos en tu pantalla cuando el servidor esté abierto.',
+                            icon: 'https://raw.githubusercontent.com/L3DXZM4/SMC/refs/heads/main/RecursosWeb/logo.png'
+                        });
+                    } catch (e) {}
+                } else {
+                    actualizarEstadoBotonNotif();
+                    if (permiso === 'denied' && tooltip) {
+                        tooltip.style.display = 'block';
+                    }
+                }
+            } catch (err) {
+                console.error('Error al pedir permiso de notificaciones:', err);
+            }
+        }
+
+        function notificarServidorAbierto(jugadores) {
+            if (Notification.permission !== 'granted') return;
+            if (localStorage.getItem('smc_notif_silenciado') === 'true') return; // Respeta si el usuario las silenció
+
+            try {
+                new Notification('🌍 ¡El servidor SMC está abierto!', {
+                    body: `Servidor de Minecraft Caleño está online con ${jugadores} ${jugadores === 1 ? 'jugador' : 'jugadores'}. ¡Entra a jugar!`,
+                    icon: 'https://raw.githubusercontent.com/L3DXZM4/SMC/refs/heads/main/RecursosWeb/logo.png',
+                    badge: 'https://raw.githubusercontent.com/L3DXZM4/SMC/refs/heads/main/RecursosWeb/logo.png',
+                    tag: 'smc-server-open',
+                    renotify: false
+                });
+            } catch (e) {}
+        }
+
+        actualizarEstadoBotonNotif();
 
         // ─── Lógica del modal del launcher ───────────────────────────────
         let timerNoEncontrado = null;
 
-        function abrirLauncher() {
+        function abrirLauncher(event) {
+            if (event) event.preventDefault();
+
             const modal = document.getElementById('modal-launcher');
             const estadoAbriendo = document.getElementById('modal-estado-abriendo');
             const estadoNoEncontrado = document.getElementById('modal-estado-noencontrado');
@@ -202,11 +337,20 @@
             estadoNoEncontrado.style.display = 'none';
             modal.style.display = 'flex';
 
-            // Disparar el protocolo personalizado
-            window.location.href = 'smclauncher://';
+            // Usar un <iframe> oculto para invocar el protocolo custom:
+            // Esto JAMÁS abre una pestaña nueva ni cierra o navega la página actual
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'smclauncher://';
+            document.body.appendChild(iframe);
+            setTimeout(() => {
+                try {
+                    document.body.removeChild(iframe);
+                } catch(e) {}
+            }, 3000);
 
-            // Si después de 3.5 segundos la página sigue visible y activa,
-            // asumimos que el launcher NO está instalado
+            // Si después de 3.5s la página sigue visible y no perdió el foco, el launcher no está instalado
+            clearTimeout(timerNoEncontrado);
             timerNoEncontrado = setTimeout(() => {
                 if (!document.hidden) {
                     estadoAbriendo.style.display = 'none';
@@ -216,18 +360,16 @@
         }
 
         function cerrarModal(event) {
-            // Cerrar si se hace click en el overlay o en el botón X
             if (event && event.target !== document.getElementById('modal-launcher') && !event.target.classList.contains('modal-btn-cerrar')) return;
             const modal = document.getElementById('modal-launcher');
             modal.style.display = 'none';
             clearTimeout(timerNoEncontrado);
         }
 
-        // Si el usuario cambia de pestaña/app (el launcher se abrió), cerrar modal y limpiar timer
+        // Si el usuario pasa a otra app (el launcher se abrió), cerrar modal
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
                 clearTimeout(timerNoEncontrado);
-                // Cerrar el modal silenciosamente si el launcher se abrió
                 const modal = document.getElementById('modal-launcher');
                 if (modal && modal.style.display === 'flex') {
                     setTimeout(() => { modal.style.display = 'none'; }, 800);
@@ -252,22 +394,24 @@
                 const data = await response.json();
 
                 if (!data.error && data.players) {
+                    const estabaOffline = prevServidorOnline === false;
+                    prevServidorOnline = true;
                     servidorOnline = true;
                     badge.classList.remove('offline');
                     badge.classList.add('online');
                     const onlineCount = data.players.online ?? 0;
                     text.textContent = `Servidor Abierto (${onlineCount} ${onlineCount === 1 ? 'jugador conectado' : 'jugadores conectados'})`;
-
-                    // Servidor ONLINE: mostrar Jugar, ocultar Descargar
                     if (btnJugar) btnJugar.style.display = 'inline-flex';
                     if (containerDescarga) containerDescarga.style.display = 'none';
+
+                    // Notificar solo si ACABA de pasar de offline a online
+                    if (estabaOffline) notificarServidorAbierto(onlineCount);
                 } else {
+                    prevServidorOnline = false;
                     servidorOnline = false;
                     badge.classList.remove('online');
                     badge.classList.add('offline');
                     text.textContent = 'Servidor Apagado';
-
-                    // Servidor OFFLINE: ocultar Jugar, mostrar Descargar
                     if (btnJugar) btnJugar.style.display = 'none';
                     if (containerDescarga) containerDescarga.style.display = 'block';
                 }
